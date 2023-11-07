@@ -1,4 +1,5 @@
-import CustomElement from '@enhance-labs/custom-element'
+/* globals customElements */
+import CustomElement from '@enhance/custom-element'
 import API from '../browser/api.mjs'
 const api = API()
 
@@ -85,5 +86,5 @@ export default class TodoList extends CustomElement  {
     `
   }
 }
- 
+
 customElements.define('todo-list', TodoList)
