@@ -2,12 +2,11 @@
 const CREATE = 'create'
 const UPDATE = 'update'
 const DESTROY = 'destroy'
+const DESTROY_FAILED = 'destroy-failed'
 const LIST = 'list'
 const CLEAR = 'clear'
 const TOGGLE = 'toggle'
 
-const  ITEM = 'todo'
-const  ITEMS = `${ITEM}s`
 
 self.onmessage = stateMachine
 
@@ -17,7 +16,7 @@ async function stateMachine ({ data }) {
   case CREATE:
     try {
       const result = await (await fetch(
-        `/${ITEMS}`, {
+        `/todos`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -33,15 +32,14 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      console.log(err)
     }
     break
   case UPDATE:
     try {
       const key = JSON.parse(payload).key
       const result = await (await fetch(
-        `/${ITEMS}/${key}`, {
+        `/todos/${key}`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -58,14 +56,15 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      console.error(err)
+      console.log(err)
     }
     break
   case DESTROY:
+    let key
     try {
-      const key = JSON.parse(payload).key
+      key = JSON.parse(payload).key
       const result = await (await fetch(
-        `/${ITEMS}/${key}/delete`, {
+        `/todos/${key}/delete`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -74,21 +73,21 @@ async function stateMachine ({ data }) {
           },
           method: 'POST'
         })).json()
-
-      self.postMessage({
-        type: DESTROY,
-        result
-      })
+      if (result.problems){
+        console.log(err)
+      }
     }
     catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type: DESTROY_FAILED,
+        result:{key}
+      })
     }
     break
   case LIST:
     try {
       const result = await (await fetch(
-        `/${ITEMS}`, {
+        `/`, {
           credentials: 'same-origin',
           headers: {
             'Accept': 'application/json',
@@ -103,8 +102,48 @@ async function stateMachine ({ data }) {
         result
       })
     } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      console.log(err)
+    }
+    break
+  case CLEAR:
+    try {
+      await fetch(
+        `/todos/completed/delete`, {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST'
+        }
+      )
+
+      self.postMessage({
+        type: CLEAR
+      })
+    } catch (err) {
+      console.log(err)
+    }
+    break
+  case TOGGLE:
+    try {
+      const result = await (await fetch(
+        `/todos/toggle`, {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST'
+        }
+      )).json()
+
+      self.postMessage({
+        type: TOGGLE,
+        result
+      })
+    } catch (err) {
+      console.log(err)
     }
     break
   case CLEAR:
