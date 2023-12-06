@@ -13,11 +13,11 @@ export default class TodoHeader extends CustomElement  {
   connectedCallback(){
     this.form = this.querySelector('form')
     this.addNewTask = this.addNewTask.bind(this)
-    this.form.addEventListener('submit', this.newTask)
+    this.form.addEventListener('submit', this.addNewTask)
   }
 
   disconnectedCallback() {
-    this.form.removeEventListener('submit', this.newTask)
+    this.form.removeEventListener('submit', this.addNewTask)
   }
 
   addNewTask(event){
