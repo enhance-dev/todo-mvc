@@ -30,7 +30,8 @@ export async function get(req) {
 export async function post(req) {
   const id = req.pathParameters?.id
 
-  const toggle = req.query.hasOwnProperty('toggle')
+  const toggle = Object.prototype.hasOwnProperty.call(req.query, 'toggle')
+  console.log('toggle', toggle)
   const body = { ...req.body }
   body.completed = toggle ? !body.completed : body.completed
 

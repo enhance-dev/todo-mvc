@@ -1,4 +1,4 @@
-/* global Worker */
+/* global HTMLFormElement, Worker */
 import Store from '@enhance/store'
 import convertToNestedObject from '@begin/validator/src/convert-to-nested-object.js'
 import formEncodingToSchema from '@begin/validator/src/form-encoding-to-schema.js'

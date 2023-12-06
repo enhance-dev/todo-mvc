@@ -7,7 +7,6 @@ const LIST = 'list'
 const CLEAR = 'clear'
 const TOGGLE = 'toggle'
 
-
 self.onmessage = stateMachine
 
 async function stateMachine ({ data }) {
@@ -59,7 +58,7 @@ async function stateMachine ({ data }) {
       console.log(err)
     }
     break
-  case DESTROY:
+  case DESTROY: {
     let key
     try {
       key = JSON.parse(payload).key
@@ -74,7 +73,7 @@ async function stateMachine ({ data }) {
           method: 'POST'
         })).json()
       if (result.problems){
-        console.log(err)
+        console.log(result.problems)
       }
     }
     catch (err) {
@@ -84,6 +83,7 @@ async function stateMachine ({ data }) {
       })
     }
     break
+  }
   case LIST:
     try {
       const result = await (await fetch(
@@ -144,49 +144,6 @@ async function stateMachine ({ data }) {
       })
     } catch (err) {
       console.log(err)
-    }
-    break
-  case CLEAR:
-    try {
-      await fetch(
-        `/${ITEMS}/completed/delete`, {
-          credentials: 'same-origin',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method: 'POST'
-        }
-      )
-
-      self.postMessage({
-        type: CLEAR
-      })
-    } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
-    }
-    break
-  case TOGGLE:
-    try {
-      const result = await (await fetch(
-        `/${ITEMS}/toggle`, {
-          credentials: 'same-origin',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method: 'POST'
-        }
-      )).json()
-
-      self.postMessage({
-        type: TOGGLE,
-        result
-      })
-    } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
     }
     break
   }
