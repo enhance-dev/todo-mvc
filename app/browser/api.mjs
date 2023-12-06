@@ -8,7 +8,10 @@ import {Todo} from '../models/schemas/todo.mjs'
 function processForm(form){
   let data = form
   if (!form) return;
-  if (form instanceof HTMLFormElement) data = new FormData(form);
+  if (form instanceof HTMLFormElement) data = new FormData(form)
+  if (!data.has('created')) {
+    data.set('created', new Date().toISOString())
+  }
   return JSON.stringify(formEncodingToSchema(convertToNestedObject(data), Todo))
 }
 

@@ -9,6 +9,11 @@ import { upsertTodo, validate } from '../models/todos.mjs'
  */
 export async function post (req) {
   const session = req.session
+
+  if (!req.body?.created) {
+    req.body.created = new Date().toISOString()
+  }
+
   // Validate
   let { problems, todo } = await validate.create(req)
   if (problems) {

@@ -10,7 +10,7 @@ export const Todo = {
     },
     "created": {
       "type": "string",
-      "format": "date"
+      "format": "date-time"
     },
     "key": {
       "type": "string"

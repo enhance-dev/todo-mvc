@@ -29,7 +29,7 @@ const getTodos = async function () {
     }
   }
 
-  return todos
+  return todos.sort((a, b) => a.created.localeCompare(b.created))
 }
 
 const validate = {
