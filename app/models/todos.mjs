@@ -32,12 +32,12 @@ const getTodos = async function () {
   return todos.sort((a, b) => a.created.localeCompare(b.created))
 }
 
-const validate = {
+const validateTodo = {
   shared (req) {
     return validator(req, Todo)
   },
   async create (req) {
-    let { valid, problems, data } = validate.shared(req)
+    let { valid, problems, data } = validateTodo.shared(req)
     if (req.body.key) {
       problems['key'] = { errors: '<p>should not be included on a create</p>' }
     }
@@ -45,7 +45,7 @@ const validate = {
     return !valid ? { problems, todo: data } : { todo: data }
   },
   async update (req) {
-    let { valid, problems, data } = validate.shared(req)
+    let { valid, problems, data } = validateTodo.shared(req)
     // Insert your custom validation here
     return !valid ? { problems, todo: data } : { todo: data }
   }
@@ -56,5 +56,5 @@ export {
   getTodo,
   getTodos,
   upsertTodo,
-  validate
+  validateTodo
 }
