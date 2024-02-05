@@ -1,21 +1,16 @@
-/* globals customElements */
-import CustomElement from '@enhance/custom-element'
-import MorphdomMixin from '@enhance/morphdom-mixin'
+import enhance from '@enhance/element'
 import API from '../browser/api.mjs'
 const api = API()
 
+const todoItem =  {
+  api,
+  init(element){
+    element.api = api
+  },
 
-export default class TodoItem extends MorphdomMixin(CustomElement)  {
-  constructor(){
-    super()
-    this.api = api
-  }
+  attrs:  ['key', 'completed', 'task' ],
 
-  static get observedAttributes() {
-    return ['key', 'completed', 'task' ]
-  }
-
-  connectedCallback(){
+  connected(){
     this.updateForm = this.querySelector('form.update-todo')
     this.completed = this.querySelector('form.update-todo input[name=completed]')
     this.task = this.querySelector('form.update-todo input[name=task]')
@@ -29,22 +24,22 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.task.addEventListener('blur', this.revert)
     this.deleteForm.addEventListener('submit', this.destroy)
     this.updateForm.addEventListener('submit', this.update)
-  }
+  },
 
-  disconnectedCallback() {
+  disconnected() {
     this.task.removeEventListener('blur', this.revert)
     this.deleteForm.removeEventListener('submit', this.destroy)
     this.updateForm.removeEventListener('submit', this.update)
-  }
+  },
 
   destroy(event){
     event.preventDefault()
     this.api.destroy(this.deleteForm)
-  }
+  },
 
   revert() {
     this.task.value = this.getAttribute('task')
-  }
+  },
 
   update(event){
     event.preventDefault()
@@ -52,7 +47,7 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
       this.completed.checked = !this.completed?.checked
     }
     this.api.update(this.updateForm)
-  }
+  },
 
   render({html,state}){
     const { attrs = {} } = state
@@ -78,4 +73,5 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
   }
 }
 
-customElements.define('todo-item', TodoItem)
+enhance('todo-item', todoItem) 
+export default todoItem
