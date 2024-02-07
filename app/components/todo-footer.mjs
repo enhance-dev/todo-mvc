@@ -6,7 +6,6 @@ const api = API()
 const todoFooter =   {
   api,
   init(element) {
-    element.api = api
     const params = new URLSearchParams(document.location.search)
     const initialFilter = params.get("filter")
     element.api.store.initialize({filter:initialFilter || 'all'})
@@ -31,7 +30,7 @@ const todoFooter =   {
   </footer>
     `
   },
-  connected() {
+  connectedCallback() {
     this.footer = this.querySelector('footer')
     this.counter = this.querySelector('strong')
     this.filters = this.querySelector('ul.filters')
@@ -39,25 +38,17 @@ const todoFooter =   {
     this.clearCompleted = this.querySelector('button.clear-completed')
 
     this.handleIntercept = this.handleIntercept.bind(this)
-    // this.update = this.update.bind(this)
     this.clear = this.clear.bind(this)
-    // this.api.subscribe(this.update, [ 'active', 'completed', 'todos' ])
 
     this.filters.addEventListener('click', this.handleIntercept)
     this.filters.addEventListener('keydown', this.handleIntercept)
     this.clearCompleted.addEventListener('click', this.clear)
   },
-  disconnected() {
+  disconnectedCallback() {
     this.filters.removeEventListener('click', this.handleIntercept)
     this.filters.removeEventListener('keydown', this.handleIntercept)
     this.clearCompleted.removeEventListener('click', this.clear)
   },
-  // update(data) {
-  //   let { active = [], completed = [], todos = [] } = data
-  //   this.counter.innerText = active.length
-  //   this.footer.style.display = todos.length > 0 ? 'block' : 'none'
-  //   this.button.style.display = completed.length > 0 ? 'block' : 'none'
-  // },
   clear(event) {
     event.preventDefault()
     this.api.clear()

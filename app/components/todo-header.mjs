@@ -5,20 +5,8 @@ const api = API()
 
 const todoHeader ={
   api,
-  init(element){
-    element.api = api
-  },
-  connected(){
-    this.form = this.querySelector('form')
-    this.addNewTask = this.addNewTask.bind(this)
-    this.form.addEventListener('submit', this.addNewTask)
-  },
 
-  disconnected() {
-    this.form.removeEventListener('submit', this.addNewTask)
-  },
-
-  addNewTask(event){
+  submit(event){
     event.preventDefault()
     this.api.create(this.form)
     this.form.reset()

@@ -12,17 +12,17 @@ const todoItem =  {
     this.update = this.update.bind(this)
     this.setComplete = this.querySelector('button.set-complete')
     this.destroy = this.destroy.bind(this)
-    this.revert = this.revert.bind(this)
+    // this.revert = this.revert.bind(this)
     this.deleteForm = this.querySelector('form.delete-todo')
     this.updateFormKeyInput = this.querySelector('form.update-todo input[name=key]')
     this.destroyFormKeyInput = this.querySelector('form.delete-todo input[name=key]')
-    this.task.addEventListener('blur', this.revert)
+    // this.task.addEventListener('blur', this.revert)
     this.deleteForm.addEventListener('submit', this.destroy)
     this.updateForm.addEventListener('submit', this.update)
   },
 
   disconnectedCallback() {
-    this.task.removeEventListener('blur', this.revert)
+    // this.task.removeEventListener('blur', this.revert)
     this.deleteForm.removeEventListener('submit', this.destroy)
     this.updateForm.removeEventListener('submit', this.update)
   },
@@ -32,7 +32,9 @@ const todoItem =  {
     this.api.destroy(this.deleteForm)
   },
 
-  revert() {
+  // revert() {
+  blur() {
+    console.log('blur')
     this.task.value = this.getAttribute('task')
   },
 
@@ -45,6 +47,7 @@ const todoItem =  {
   },
 
   render({html,state}){
+    console.log('todo-item render')
     const { attrs = {} } = state
     const { completed = '', key = '', task = '' } = attrs
     const checked = completed === 'true' ? 'checked' : ''
