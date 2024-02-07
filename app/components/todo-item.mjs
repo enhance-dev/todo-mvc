@@ -4,13 +4,8 @@ const api = API()
 
 const todoItem =  {
   api,
-  init(element){
-    element.api = api
-  },
-
   attrs:  ['key', 'completed', 'task' ],
-
-  connected(){
+  connectedCallback(){
     this.updateForm = this.querySelector('form.update-todo')
     this.completed = this.querySelector('form.update-todo input[name=completed]')
     this.task = this.querySelector('form.update-todo input[name=task]')
@@ -26,7 +21,7 @@ const todoItem =  {
     this.updateForm.addEventListener('submit', this.update)
   },
 
-  disconnected() {
+  disconnectedCallback() {
     this.task.removeEventListener('blur', this.revert)
     this.deleteForm.removeEventListener('submit', this.destroy)
     this.updateForm.removeEventListener('submit', this.update)

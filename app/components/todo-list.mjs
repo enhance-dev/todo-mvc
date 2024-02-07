@@ -5,34 +5,31 @@ const api = API()
 
 const todoList = {
   api,
-  init(element){
-    element.api = api
-  },
-
-  connected(){
-    this.update = this.update.bind(this)
+  keys: ['todos', 'filter'],
+  connectedCallback(){
+    // this.update = this.update.bind(this)
     this.toggle = this.toggle.bind(this)
     this.section = this.querySelector('section')
     this.list = this.querySelector('ul.todo-list')
     this.toggleBtn = this.querySelector('button.toggle-all')
-    this.api.subscribe(this.update,['todos', 'filter'])
+    // this.api.subscribe(this.update,['todos', 'filter'])
     this.toggleBtn.addEventListener('click', this.toggle)
   },
 
-  disconnected(){
+  disconnectedCallback(){
     this.toggleBtn.removeEventListener('click', this.toggle)
   },
 
-  update(){
-    let filter = this.api.store.filter
-    this.section.style.display = this.api.store.todos.length > 0 ? 'block' : 'none'
-    let items = filter === 'all' ? this.api.store.todos : this.api.store[filter]
-    this.list.innerHTML = items.map(todo => `
-      <li id="${todo.key}" >
-        <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
-      </li>
-    `).join('')
-  },
+  // update(){
+  //   let filter = this.api.store.filter
+  //   this.section.style.display = this.api.store.todos.length > 0 ? 'block' : 'none'
+  //   let items = filter === 'all' ? this.api.store.todos : this.api.store[filter]
+  //   this.list.innerHTML = items.map(todo => `
+  //     <li id="${todo.key}" >
+  //       <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
+  //     </li>
+  //   `).join('')
+  // },
 
   toggle(event) {
     event.preventDefault()
@@ -41,11 +38,15 @@ const todoList = {
 
   render({html,state}){
     const { store ={}} = state
-    const { todos =[]} = store
+    // const { todos =[]} = store
+    const { todos =[], filter='all'} = store
 
     const display = todos.length ? 'block' : 'none'
 
-    const listItems = todos.map(todo => `
+    const visibleTodos = filter === 'all' ? todos : store[filter]
+
+    // const listItems = todos.map(todo => `
+    const listItems = visibleTodos.map(todo => `
       <li id="${todo.key}" >
       <todo-item class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
       </li>

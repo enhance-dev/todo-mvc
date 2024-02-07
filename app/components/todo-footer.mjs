@@ -11,6 +11,7 @@ const todoFooter =   {
     const initialFilter = params.get("filter")
     element.api.store.initialize({filter:initialFilter || 'all'})
   },
+  keys: ['todos', 'completed', 'active', 'filter'],
   render({ html, state }) {
     const { store = {} } = state
     const { todos = [], active = [], completed = [], filter = 'all' } = store
@@ -20,9 +21,9 @@ const todoFooter =   {
   <footer class="footer" style="display: ${display};">
     <span class="todo-count"><strong>${active.length}</strong> items left</span>
     <ul class="filters">
-      <li><a href="/todos" class="${filter === 'all' ? 'selected' : ''}">All</a></li>
-      <li><a href="/todos?filter=active" class="${filter === 'active' ? 'selected' : ''}">Active</a></li>
-      <li><a href="/todos?filter=completed" class="${filter === 'completed' ? 'selected' : ''}">Completed</a></li>
+      <li><a href="/" class="${filter === 'all' ? 'selected' : ''}">All</a></li>
+      <li><a href="/?filter=active" class="${filter === 'active' ? 'selected' : ''}">Active</a></li>
+      <li><a href="/?filter=completed" class="${filter === 'completed' ? 'selected' : ''}">Completed</a></li>
     </ul>
     <form action="/todos/completed/delete" method="POST">
       <button class="clear-completed" style="display: ${completed.length ? 'block' : 'none'};">Clear completed</button>
@@ -38,9 +39,9 @@ const todoFooter =   {
     this.clearCompleted = this.querySelector('button.clear-completed')
 
     this.handleIntercept = this.handleIntercept.bind(this)
-    this.update = this.update.bind(this)
+    // this.update = this.update.bind(this)
     this.clear = this.clear.bind(this)
-    this.api.subscribe(this.update, [ 'active', 'completed', 'todos' ])
+    // this.api.subscribe(this.update, [ 'active', 'completed', 'todos' ])
 
     this.filters.addEventListener('click', this.handleIntercept)
     this.filters.addEventListener('keydown', this.handleIntercept)
@@ -51,12 +52,12 @@ const todoFooter =   {
     this.filters.removeEventListener('keydown', this.handleIntercept)
     this.clearCompleted.removeEventListener('click', this.clear)
   },
-  update(data) {
-    let { active = [], completed = [], todos = [] } = data
-    this.counter.innerText = active.length
-    this.footer.style.display = todos.length > 0 ? 'block' : 'none'
-    this.button.style.display = completed.length > 0 ? 'block' : 'none'
-  },
+  // update(data) {
+  //   let { active = [], completed = [], todos = [] } = data
+  //   this.counter.innerText = active.length
+  //   this.footer.style.display = todos.length > 0 ? 'block' : 'none'
+  //   this.button.style.display = completed.length > 0 ? 'block' : 'none'
+  // },
   clear(event) {
     event.preventDefault()
     this.api.clear()
@@ -69,6 +70,7 @@ const todoFooter =   {
         anchor === event.target ? anchor.classList.add('selected') : anchor.classList.remove('selected')
       })
       const url = new URL(event.target.href);
+      history.pushState({}, '', url.pathname + url.search)
       const filter = url.searchParams.get("filter") || 'all'
       this.api.store.filter = filter
     }
