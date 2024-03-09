@@ -1,54 +1,31 @@
 /* globals customElements */
-import CustomElement from '@enhance/custom-element'
+import enhance from '@enhance/element'
 import API from '../browser/api.mjs'
 const api = API()
 
+const todoList = {
+  api,
+  keys: ['todos', 'filter'],
+  init(element) {
+    element.submit = element.submit.bind(element)
+  },
 
-export default class TodoList extends CustomElement  {
-  constructor(){
-    super()
-    this.api = api
-  }
-
-  connectedCallback(){
-    this.update = this.update.bind(this)
-    this.toggle = this.toggle.bind(this)
-    this.section = this.querySelector('section')
-    this.list = this.querySelector('ul.todo-list')
-    this.toggleBtn = this.querySelector('button.toggle-all')
-    this.api.subscribe(this.update,['todos', 'filter'])
-    this.toggleBtn.addEventListener('click', this.toggle)
-  }
-
-  disconnectedCallback(){
-    this.toggleBtn.removeEventListener('click', this.toggle)
-  }
-
-  update(){
-    let filter = this.api.store.filter
-    this.section.style.display = this.api.store.todos.length > 0 ? 'block' : 'none'
-    let items = filter === 'all' ? this.api.store.todos : this.api.store[filter]
-    this.list.innerHTML = items.map(todo => `
-      <li id="${todo.key}" >
-        <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
-      </li>
-    `).join('')
-  }
-
-  toggle(event) {
+  submit(event) {
     event.preventDefault()
+    console.log('submit toggle all')
     this.api.toggle()
-  }
+  },
 
   render({html,state}){
+    console.log('todo-list render')
     const { store ={}} = state
-    const { todos =[]} = store
+    const { todos =[], filter='all'} = store
 
     const display = todos.length ? 'block' : 'none'
-
-    const listItems = todos.map(todo => `
+    const visibleTodos = filter === 'all' ? todos : store[filter]
+    const listItems = visibleTodos.map(todo => `
       <li id="${todo.key}" >
-      <todo-item class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
+        <todo-item onblur="form.update-todo" class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
       </li>
       `).join('')
 
@@ -66,4 +43,5 @@ export default class TodoList extends CustomElement  {
   }
 }
 
-customElements.define('todo-list', TodoList)
+enhance('todo-list', todoList)
+export default todoList

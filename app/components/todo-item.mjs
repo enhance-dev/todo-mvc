@@ -1,20 +1,10 @@
-/* globals customElements */
-import CustomElement from '@enhance/custom-element'
-import MorphdomMixin from '@enhance/morphdom-mixin'
+import enhance from '@enhance/element'
 import API from '../browser/api.mjs'
 const api = API()
 
-
-export default class TodoItem extends MorphdomMixin(CustomElement)  {
-  constructor(){
-    super()
-    this.api = api
-  }
-
-  static get observedAttributes() {
-    return ['key', 'completed', 'task' ]
-  }
-
+const todoItem =  {
+  api,
+  attrs:  ['key', 'completed', 'task' ],
   connectedCallback(){
     this.updateForm = this.querySelector('form.update-todo')
     this.completed = this.querySelector('form.update-todo input[name=completed]')
@@ -22,29 +12,31 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.update = this.update.bind(this)
     this.setComplete = this.querySelector('button.set-complete')
     this.destroy = this.destroy.bind(this)
-    this.revert = this.revert.bind(this)
+    // this.revert = this.revert.bind(this)
     this.deleteForm = this.querySelector('form.delete-todo')
     this.updateFormKeyInput = this.querySelector('form.update-todo input[name=key]')
     this.destroyFormKeyInput = this.querySelector('form.delete-todo input[name=key]')
-    this.task.addEventListener('blur', this.revert)
+    // this.task.addEventListener('blur', this.revert)
     this.deleteForm.addEventListener('submit', this.destroy)
     this.updateForm.addEventListener('submit', this.update)
-  }
+  },
 
   disconnectedCallback() {
-    this.task.removeEventListener('blur', this.revert)
+    // this.task.removeEventListener('blur', this.revert)
     this.deleteForm.removeEventListener('submit', this.destroy)
     this.updateForm.removeEventListener('submit', this.update)
-  }
+  },
 
   destroy(event){
     event.preventDefault()
     this.api.destroy(this.deleteForm)
-  }
+  },
 
-  revert() {
+  // revert() {
+  blur() {
+    console.log('blur')
     this.task.value = this.getAttribute('task')
-  }
+  },
 
   update(event){
     event.preventDefault()
@@ -52,9 +44,10 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
       this.completed.checked = !this.completed?.checked
     }
     this.api.update(this.updateForm)
-  }
+  },
 
   render({html,state}){
+    console.log('todo-item render')
     const { attrs = {} } = state
     const { completed = '', key = '', task = '' } = attrs
     const checked = completed === 'true' ? 'checked' : ''
@@ -78,4 +71,5 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
   }
 }
 
-customElements.define('todo-item', TodoItem)
+enhance('todo-item', todoItem) 
+export default todoItem

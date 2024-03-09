@@ -32,6 +32,7 @@
     "@begin/validator": "^1.0.1",
     "@enhance/arc-plugin-enhance": "^9.1.2",
     "@enhance/custom-element": "^1.2.0",
+    "@enhance/element": "^1.4.3",
     "@enhance/morphdom-mixin": "^1.1.1",
     "@enhance/store": "^1.0.2",
     "@enhance/styles-cribsheet": "^0.0.9",

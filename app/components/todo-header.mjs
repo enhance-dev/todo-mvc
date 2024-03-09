@@ -1,30 +1,16 @@
 /* globals customElements */
-import CustomElement from '@enhance/custom-element'
+import enhance from '@enhance/element'
 import API from '../browser/api.mjs'
 const api = API()
 
+const todoHeader ={
+  api,
 
-export default class TodoHeader extends CustomElement  {
-  constructor(){
-    super()
-    this.api = api
-  }
-
-  connectedCallback(){
-    this.form = this.querySelector('form')
-    this.addNewTask = this.addNewTask.bind(this)
-    this.form.addEventListener('submit', this.addNewTask)
-  }
-
-  disconnectedCallback() {
-    this.form.removeEventListener('submit', this.addNewTask)
-  }
-
-  addNewTask(event){
+  submit(event){
     event.preventDefault()
     this.api.create(this.form)
     this.form.reset()
-  }
+  },
 
   render({html}){
     return html`
@@ -38,4 +24,5 @@ export default class TodoHeader extends CustomElement  {
   }
 }
 
-customElements.define('todo-header', TodoHeader)
+enhance('todo-header', todoHeader)
+export default todoHeader
